@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luyện nói tiếng Anh với GPT</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <img
+        src="https://images.unsplash.com/photo-1520454974749-611b7248ffdb"
+        alt="Logo"
+        class="logo"  
+      />
+      <h1>🗣️ App đẳng cấp nhất thế giới</h1>
+    </header>
+
+    <main>
+      <div class="chat-box" id="history">
+        <!-- Lịch sử tin nhắn sẽ được thêm vào đây -->
+      </div>
+
+      <div class="input-area">
+        <input type="text" id="userInput" placeholder="Nhập câu tiếng Anh..." />
+        <button onclick="sendText()">Gửi</button>
+        <button onclick="startListening()">🎤</button>
+      </div>
+    </main>
+    <a href="https://www.facebook.com/dungkksmtp" target="_self">My contact</a
+    ><br />
+    <script>
+      async function sendText() {
+        const inputElem = document.getElementById("userInput");
+        const input = inputElem.value.trim();
+        if (!input) return;
+
+        inputElem.value = "";
+        addMessage("🧑 Bạn", input);
+
+        addMessage("🤖 GPT", "⏳ Đang xử lý...");
+
+        const res = await fetch("http://localhost:5000/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: input }),
+        });
+
+        const data = await res.json();
+        const reply = data.reply;
+
+        updateLastMessage("🤖 GPT", reply);
+
+        // ✅ Phát âm thanh bằng trình duyệt
+        const utterance = new SpeechSynthesisUtterance(reply);
+        utterance.lang = "en-US";
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function addMessage(sender, text) {
+        const history = document.getElementById("history");
+        const message = document.createElement("div");
+        message.className = "message";
+        message.innerHTML = `<span class="sender">${sender}:</span><div class="bubble">${text}</div>`;
+        history.appendChild(message);
+        history.scrollTop = history.scrollHeight;
+      }
+
+      function updateLastMessage(sender, newText) {
+        const history = document.getElementById("history");
+        const messages = history.querySelectorAll(".message");
+        const lastMsg = messages[messages.length - 1];
+        if (
+          lastMsg &&
+          lastMsg.querySelector(".sender").textContent === `${sender}:`
+        ) {
+          lastMsg.querySelector(".bubble").textContent = newText;
+        }
+      }
+
+      function startListening() {
+        const recognition = new (window.SpeechRecognition ||
+          window.webkitSpeechRecognition)();
+        recognition.lang = "en-US";
+        recognition.start();
+
+        recognition.onresult = function (event) {
+          const text = event.results[0][0].transcript;
+          document.getElementById("userInput").value = text;
+          sendText();
+        };
+
+        recognition.onerror = function () {
+          alert("⚠️ Không thể nhận giọng nói.");
+        };
+      }
+    </script>
+  </body>
+</html>
