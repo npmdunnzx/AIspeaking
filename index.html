@@ -3,19 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Luyện nói tiếng Anh với GPT</title>
+    <!-- link:favicon -> enter -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./icon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="./icon/manifest.json" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Luyện nói tiếng Anh với AI</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header>
-      <img
-        src="https://images.unsplash.com/photo-1520454974749-611b7248ffdb"
-        alt="Logo"
-        class="logo"  
-      />
+      <img src="./icon/android-icon-144x144.png" alt="Logo" class="logo" />
       <h1>🗣️ App đẳng cấp nhất thế giới</h1>
     </header>
-
+    <button class="toggle-button" onclick="toggleSidebar()">
+      ☰ history</button>
+    <div class="sidebar" id="sidebar">
+        <h2>☰ history <button onclick="toggleSidebar()">✖️</button></h2>
+        
+    </div>
     <main>
       <div class="chat-box" id="history">
         <!-- Lịch sử tin nhắn sẽ được thêm vào đây -->
@@ -93,6 +105,9 @@
         recognition.onerror = function () {
           alert("⚠️ Không thể nhận giọng nói.");
         };
+      }
+      function toggleSidebar(){
+        document.getElementById("sidebar").classList.toggle("open");
       }
     </script>
   </body>
